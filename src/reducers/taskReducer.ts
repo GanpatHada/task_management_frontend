@@ -22,7 +22,7 @@ export const tasksReducer = (state: Task[], action: Action): Task[] => {
         case "ADD_TASK":
             return [...state, action.payload];
         case "UPDATE_TASK":
-            return state.map(task => (task.id === action.payload.id ? action.payload : task));
+            return state.map(task => (Number(task.id) === Number(action.payload.id) ? action.payload : task));
         case "DELETE_TASK":
             return state.filter(task => Number(task.id) !== Number(action.payload));
         case "TOGGLE_TASK_COMPLETION":

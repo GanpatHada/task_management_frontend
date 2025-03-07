@@ -57,7 +57,9 @@ const TaskCard: React.FC<TaskProp> = ({ task }) => {
             {new Date(task.due_date).toLocaleDateString("en-GB")}
             <br />
           </Typography>
+          {task.completed && <Typography variant="h6" sx={{fontSize:'0.8rem',color:'green'}}>completed</Typography>}
         </CardContent>
+        
         <CardActions>
           <Button
             size="small"

@@ -53,8 +53,7 @@ const FormDialog: React.FC = () => {
     try {
       setLoading(true);
       const result = await fetchEditTask(dialog.taskId,{...task,completed});
-      console.log(result);
-      
+      dispatch({type:'UPDATE_TASK',payload:result.data.updatedTask})
     } catch (error) {
       toast.error((error as Error).message || "Something went wrong");
     } finally {
