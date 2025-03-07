@@ -36,11 +36,11 @@ This is the frontend repository of Task Management application built using React
    ```
 
 3. Set up environment variables:
-   - Create a `.env` file in the root directory and add:
-     ```env
-     VITE_BACKEND_BASE_URL=http://localhost:5000
-     ```
-     *(Change `http://localhost:5000` based on your backend server URL.)*
+  Create a `.env` file in the root directory and add:
+  ```env
+  VITE_BACKEND_BASE_URL=http://localhost:5000
+  ```
+  *(Change `http://localhost:5000` based on your backend server URL.)*
 
 4. Run the application:
    ```sh
