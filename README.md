@@ -11,7 +11,6 @@ This is the frontend repository of Task Management application built using React
 - Create, edit, and delete tasks
 - Mark tasks as completed or pending
 - Set due dates for tasks
-- Filter and sort tasks
 
 
 ## Technologies Used

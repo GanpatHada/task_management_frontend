@@ -4,11 +4,12 @@ import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
-import { fetchAddTask, Task } from "../../services/taskService";
+import { fetchAddTask} from "../../services/taskService";
 import { toast } from "react-toastify";
 import { TaskContext } from "../../contexts/taskContext";
 import React, { useContext, useEffect, useState } from "react";
 import { useDialog } from "../../hooks/useDialog";
+import { Task } from "../../types/taskTypes";
 
 
 
@@ -52,8 +53,8 @@ const FormDialog: React.FC = () => {
   useEffect(()=>{
     if(dialog.taskId)
     {
-      const currentTask:Task | undefined=tasks.find(task=>Number(task.id)===Number(dialog.taskId));
-      setTask({title:currentTask?.title})
+      const currentTask: Task | undefined = tasks.find(task=>Number(task.id)===Number(dialog.taskId));
+      setTask({title: currentTask?.title ?? "" })
 
     }
   })
