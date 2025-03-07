@@ -16,12 +16,29 @@ import { fetchAllTasks,} from "../../services/taskService";
 import { toast } from "react-toastify";
 import FormDialog from "../../components/dialog/Dialog";
 import { TaskContext } from "../../contexts/taskContext";
+import { fetchUserDetails } from "../../services/authService";
 
 interface HeroSectionProps{
      handleOpenDialog:()=>void;
 }
 
 const HeroSection: React.FC<HeroSectionProps>= ({handleOpenDialog}) => {
+
+  const [user,setUser]=useState({
+    name:'',
+    email:''
+  })
+  useEffect(()=>{
+
+    const getUserDetails=async()=>{
+    const result=await fetchUserDetails();
+    setUser({name:result.data.user.name,email:result.data.user.email})
+    }
+    getUserDetails();
+
+  },[])
+
+
   return (
     <Container
       maxWidth={false}
@@ -36,10 +53,10 @@ const HeroSection: React.FC<HeroSectionProps>= ({handleOpenDialog}) => {
     >
       <Box>
         <Typography variant="h2" sx={{ fontWeight: "bold" }}>
-          Ganpat Hada
+        {user.name}
         </Typography>
         <Typography variant="h6" sx={{ color: "gray" }}>
-          ganpat@gmail.com
+         {user.email}
         </Typography>
       </Box>
       <Button
