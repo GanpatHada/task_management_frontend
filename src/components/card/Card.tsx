@@ -11,6 +11,7 @@ import {
 import { fetchDeleteTask, Task } from "../../services/taskService";
 import { toast } from "react-toastify";
 import { TaskContext } from "../../contexts/taskContext";
+import { useDialog } from "../../hooks/useDialog";
 
 interface TaskProp {
   task: Task;
@@ -23,6 +24,7 @@ const TaskCard: React.FC<TaskProp> = ({ task }) => {
     throw new Error("TaskList must be used within a TaskProvider");
   }
   const { dispatch } = context;
+  const {openDialog}=useDialog()
   const handleDeleteTaks = async () => {
     try {
       setLoading(true);
@@ -66,7 +68,7 @@ const TaskCard: React.FC<TaskProp> = ({ task }) => {
             delete
           </Button>
           <Button
-            // onClick={handleOpenDialog}
+            onClick={()=>openDialog(task.id)}
             size="small"
             color="secondary"
           >

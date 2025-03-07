@@ -17,13 +17,10 @@ import { toast } from "react-toastify";
 import FormDialog from "../../components/dialog/Dialog";
 import { TaskContext } from "../../contexts/taskContext";
 import { fetchUserDetails } from "../../services/authService";
+import { useDialog } from "../../hooks/useDialog";
 
-interface HeroSectionProps{
-     handleOpenDialog:()=>void;
-}
-
-const HeroSection: React.FC<HeroSectionProps>= ({handleOpenDialog}) => {
-
+const HeroSection: React.FC= () => {
+  const{openDialog}=useDialog()
   const [user,setUser]=useState({
     name:'',
     email:''
@@ -60,7 +57,7 @@ const HeroSection: React.FC<HeroSectionProps>= ({handleOpenDialog}) => {
         </Typography>
       </Box>
       <Button
-        onClick={handleOpenDialog}
+        onClick={()=>openDialog()}
         variant="contained"
         sx={{
           color: "white",
@@ -130,15 +127,11 @@ const NotesSection: React.FC = () => {
 };
 
 const DashboardContent: React.FC = () => {
-  const[openDialog,setOpenDialog]=useState<boolean>(false); 
-  
-  const handleOpenDialog=()=>setOpenDialog(true);
-  const handleCloseDialog=()=>setOpenDialog(false);
-  
+   
   return (
     <main id="dashboard-content">
-      <HeroSection handleOpenDialog={handleOpenDialog} />
-      <FormDialog handleCloseDialog={handleCloseDialog} openDialog={openDialog} />
+      <HeroSection  />
+      <FormDialog  />
       <NotesSection />
     </main>
   );

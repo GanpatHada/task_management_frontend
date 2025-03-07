@@ -5,9 +5,11 @@ import App from "./App.tsx";
 import { ToastContainer } from "react-toastify";
 import { BrowserRouter } from "react-router-dom";
 import { TaskProvider } from "./contexts/taskContext.tsx";
+import { DialogProvider } from "./contexts/dialogContext.tsx";
 
 createRoot(document.getElementById("root")!).render(
   <BrowserRouter>
+  <DialogProvider>
   <TaskProvider>
   <StrictMode>
     <ToastContainer
@@ -25,5 +27,6 @@ createRoot(document.getElementById("root")!).render(
     <App />
   </StrictMode>
   </TaskProvider>
+  </DialogProvider>
   </BrowserRouter>
 );

@@ -1,32 +1,29 @@
-import * as React from "react";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
-import { fetchAddTask } from "../../services/taskService";
+import { fetchAddTask, Task } from "../../services/taskService";
 import { toast } from "react-toastify";
 import { TaskContext } from "../../contexts/taskContext";
+import React, { useContext, useEffect, useState } from "react";
+import { useDialog } from "../../hooks/useDialog";
 
-interface FormDialogProps {
-  openDialog: boolean;
-  handleCloseDialog: () => void;
-}
-const FormDialog: React.FC<FormDialogProps> = ({
-  openDialog,
-  handleCloseDialog,
-}) => {
-  const [task, setTask] = React.useState({
+
+
+const FormDialog: React.FC = () => {
+  const{dialog,closeDialog}=useDialog();
+  const [task, setTask] = useState({
     title: "",
     description: "",
     dueDate: "",
   });
-  const context = React.useContext(TaskContext);
+  const context = useContext(TaskContext);
     if (!context) {
       throw new Error("TaskList must be used within a TaskProvider");
     }
-  const{dispatch}=context;
+  const{tasks,dispatch}=context;
   const[loading,setLoading]=React.useState<boolean>(false)
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTask({ ...task, [e.target.name]: e.target.value });
@@ -44,16 +41,28 @@ const FormDialog: React.FC<FormDialogProps> = ({
     }
     finally{
       setLoading(false);
-      handleCloseDialog();
+      closeDialog();
     }
     
   }
 
+  
+  
+  
+  useEffect(()=>{
+    if(dialog.taskId)
+    {
+      const currentTask:Task | undefined=tasks.find(task=>Number(task.id)===Number(dialog.taskId));
+      setTask({title:currentTask?.title})
+
+    }
+  })
+
   return (
     <React.Fragment>
       <Dialog
-        open={openDialog}
-        onClose={handleCloseDialog}
+        open={dialog.open}
+        onClose={closeDialog}
         maxWidth="sm"
         fullWidth
         slotProps={{
@@ -63,7 +72,7 @@ const FormDialog: React.FC<FormDialogProps> = ({
           },
         }}
       >
-        <DialogTitle>Add Task</DialogTitle>
+        <DialogTitle>{dialog.taskId?'Edit':'Add'} Task</DialogTitle>
         <DialogContent>
           <TextField
             autoFocus
@@ -108,8 +117,8 @@ const FormDialog: React.FC<FormDialogProps> = ({
           
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCloseDialog} color="error">Cancel</Button>
-          <Button type="submit" loading={loading} color="secondary">Add</Button>
+          <Button onClick={closeDialog} color="error">Cancel</Button>
+          <Button type="submit" loading={loading} color="secondary">{dialog.taskId?'Edit':'Add'}</Button>
         </DialogActions>
       </Dialog>
     </React.Fragment>
