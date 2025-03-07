@@ -4,60 +4,85 @@ import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
-import { fetchAddTask} from "../../services/taskService";
+import { fetchAddTask, fetchEditTask } from "../../services/taskService";
 import { toast } from "react-toastify";
 import { TaskContext } from "../../contexts/taskContext";
 import React, { useContext, useEffect, useState } from "react";
 import { useDialog } from "../../hooks/useDialog";
 import { Task } from "../../types/taskTypes";
-
-
-
+import { Checkbox, FormControlLabel } from "@mui/material";
 const FormDialog: React.FC = () => {
-  const{dialog,closeDialog}=useDialog();
+  const { dialog, closeDialog } = useDialog();
+
   const [task, setTask] = useState({
     title: "",
     description: "",
     dueDate: "",
   });
+  const [completed, setCompleted] = React.useState(false);
+  const handleTaskCompleted = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setCompleted(event.target.checked);
+  };
   const context = useContext(TaskContext);
-    if (!context) {
-      throw new Error("TaskList must be used within a TaskProvider");
-    }
-  const{tasks,dispatch}=context;
-  const[loading,setLoading]=React.useState<boolean>(false)
+  if (!context) {
+    throw new Error("TaskList must be used within a TaskProvider");
+  }
+  const { tasks, dispatch } = context;
+  const [loading, setLoading] = React.useState<boolean>(false);
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTask({ ...task, [e.target.name]: e.target.value });
   };
 
-  const handleTaskSubmit=async(e: React.FormEvent<HTMLFormElement>)=>{
+  const handleTaskSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      setLoading(true)
+      setLoading(true);
       const result = await fetchAddTask(task);
-      toast.success(result.message); 
-      dispatch({type:'ADD_TASK',payload:result.data})
+      toast.success(result.message);
+      dispatch({ type: "ADD_TASK", payload: result.data });
     } catch (error) {
       toast.error((error as Error).message || "Something went wrong");
-    }
-    finally{
+    } finally {
       setLoading(false);
       closeDialog();
     }
-    
-  }
+  };
 
-  
-  
-  
-  useEffect(()=>{
-    if(dialog.taskId)
-    {
-      const currentTask: Task | undefined = tasks.find(task=>Number(task.id)===Number(dialog.taskId));
-      setTask({title: currentTask?.title ?? "" })
-
+  const handleTaskEdit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    try {
+      setLoading(true);
+      const result = await fetchEditTask(dialog.taskId,{...task,completed});
+      console.log(result);
+      
+    } catch (error) {
+      toast.error((error as Error).message || "Something went wrong");
+    } finally {
+      setLoading(false);
+      closeDialog();
     }
-  })
+  };
+
+
+
+
+  useEffect(() => {
+    if (dialog.taskId) {
+      const currentTask: Task | undefined = tasks?.find(
+        (task) => Number(task.id) === Number(dialog.taskId)
+      );
+      setTask((prevTask) => ({
+        ...prevTask,
+        title: currentTask?.title ?? "",
+        description: currentTask?.description ?? "",
+        dueDate:
+          new Date(currentTask?.due_date ?? "").toISOString().split("T")[0] ??
+          "",
+      }));
+      setCompleted(currentTask?.completed ?? false)
+      console.log(task.dueDate);
+    }
+  }, [dialog.open]);
 
   return (
     <React.Fragment>
@@ -69,11 +94,11 @@ const FormDialog: React.FC = () => {
         slotProps={{
           paper: {
             component: "form",
-            onSubmit: handleTaskSubmit
+            onSubmit: dialog.taskId?handleTaskEdit : handleTaskSubmit,
           },
         }}
       >
-        <DialogTitle>{dialog.taskId?'Edit':'Add'} Task</DialogTitle>
+        <DialogTitle>{dialog.taskId ? "Edit" : "Add"} Task</DialogTitle>
         <DialogContent>
           <TextField
             autoFocus
@@ -108,18 +133,27 @@ const FormDialog: React.FC = () => {
             id="dueDate"
             name="dueDate"
             label="Due Date"
-            type="date" 
+            type="date"
             fullWidth
             variant="standard"
             InputLabelProps={{ shrink: true }}
             value={task.dueDate}
             onChange={handleChange}
           />
-          
+          {dialog.taskId&& <FormControlLabel
+            label="Task Completed"
+            control={
+              <Checkbox checked={completed} onChange={handleTaskCompleted} />
+            }
+          />}
         </DialogContent>
         <DialogActions>
-          <Button onClick={closeDialog} color="error">Cancel</Button>
-          <Button type="submit" loading={loading} color="secondary">{dialog.taskId?'Edit':'Add'}</Button>
+          <Button onClick={closeDialog} color="error">
+            Cancel
+          </Button>
+          <Button type="submit" loading={loading} color="secondary">
+            {dialog.taskId ? "Edit" : "Add"}
+          </Button>
         </DialogActions>
       </Dialog>
     </React.Fragment>
