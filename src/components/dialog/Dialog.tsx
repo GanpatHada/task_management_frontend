@@ -96,6 +96,7 @@ const FormDialog: React.FC = () => {
             onSubmit: dialog.taskId?handleTaskEdit : handleTaskSubmit,
           },
         }}
+        
       >
         <DialogTitle>{dialog.taskId ? "Edit" : "Add"} Task</DialogTitle>
         <DialogContent>
@@ -111,6 +112,7 @@ const FormDialog: React.FC = () => {
             variant="standard"
             value={task.title}
             onChange={handleChange}
+            inputProps={{ maxLength: 40 }}
           />
           <TextField
             required
@@ -125,6 +127,7 @@ const FormDialog: React.FC = () => {
             rows={3}
             value={task.description}
             onChange={handleChange}
+            inputProps={{ maxLength: 100 }}
           />
           <TextField
             required

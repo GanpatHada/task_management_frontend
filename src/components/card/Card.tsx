@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import "./Card.css";
 import {
+  Box,
   Button,
   Card,
   CardActions,
@@ -41,23 +42,31 @@ const TaskCard: React.FC<TaskProp> = ({ task }) => {
 
   return (
     <Grid2 size={{ xs: 12, md: 3 }}>
-      <Card variant="outlined">
-        <CardContent>
+      <Card variant="outlined" sx={{display:'flex',flexDirection:'column',height:'100%'}}>
+        <CardContent sx={{flex:'1',display:'flex',flexDirection:'column',gap:'5px'}}>
           <Typography gutterBottom variant="h6">
             {task.title}
           </Typography>
+          
           <Typography
             variant="subtitle1"
-            sx={{ color: "gray" }}
+            sx={{ color: "gray",lineHeight:'normal'}}
             component="div"
           >
             {task.description}
           </Typography>
+          <Box>
           <Typography variant="body2">
-            {new Date(task.due_date).toLocaleDateString("en-GB")}
+            <strong>Create at : </strong>{new Date(task.created_at).toLocaleDateString("en-GB")}
             <br />
           </Typography>
-          {task.completed && <Typography variant="h6" sx={{fontSize:'0.8rem',color:'green'}}>completed</Typography>}
+          
+          <Typography variant="body2">
+            <strong>Due date : </strong>{new Date(task.due_date).toLocaleDateString("en-GB")}
+            <br />
+          </Typography>
+          </Box>
+          {task.completed && <Typography variant="h6" sx={{fontSize:'0.8rem',background:'green',color:'white',width:'fit-content',padding:'3px 8px',borderRadius:'16px'}}>completed</Typography>}
         </CardContent>
         
         <CardActions>

@@ -20,7 +20,7 @@ export type Action =
 export const tasksReducer = (state: Task[], action: Action): Task[] => {
     switch (action.type) {
         case "ADD_TASK":
-            return [...state, action.payload];
+            return [action.payload,...state];
         case "UPDATE_TASK":
             return state.map(task => (Number(task.id) === Number(action.payload.id) ? action.payload : task));
         case "DELETE_TASK":
